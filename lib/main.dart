@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:shopsolutions/components/horizontal_listview.dart';
+
+import 'components/products.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -13,6 +17,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Widget image_carousel = Container(
+    height: 200.0,
+    child: Carousel(
+      boxFit: BoxFit.cover,
+      images: [
+        AssetImage('images/c1.jpg'),
+        AssetImage('images/m1.jpeg'),
+        AssetImage('images/m2.jpg'),
+        AssetImage('images/w3.jpeg'),
+        AssetImage('images/w4.jpeg')
+      ],
+      autoplay: false,
+      dotSize: 4.0,
+      indicatorBgPadding: 2.0,
+//      animationCurve: Curves.fastOutSlowIn,
+//      animationDuration: Duration(milliseconds: 1000),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,14 +126,28 @@ class _HomePageState extends State<HomePage> {
                 leading: Icon(Icons.help,color: Colors.green,),
               ),
             ),
-
-
-
-
-
-
           ],
         ),
+      ),
+
+      body: ListView(
+          children: [
+            image_carousel,
+            Padding(padding: EdgeInsets.all(8.0),
+            child: Text('Categories'),
+            ),
+            HorizontalList(),
+
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text('Recent Products'),
+            ),
+            Container(
+              height: 320,
+              child: Products(),
+            )
+
+          ],
       ),
 
     );
