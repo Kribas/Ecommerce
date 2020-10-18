@@ -22,6 +22,34 @@ class _ProductsState extends State<Products> {
       "price":50
     },
 
+    {
+      "name":"Red dress",
+      "picture":"images/products/hills1.jpeg",
+      "old_price":100,
+      "price":50
+    },
+
+    {
+      "name":"Red dress",
+      "picture":"images/products/blazer2.jpeg",
+      "old_price":100,
+      "price":50
+    },
+
+    {
+      "name":"Red dress",
+      "picture":"images/products/skt2.jpeg",
+      "old_price":100,
+      "price":50
+    },
+
+    {
+      "name":"Red dress",
+      "picture":"images/products/dress2.jpeg",
+      "old_price":100,
+      "price":50
+    },
+
   ];
 
   @override
@@ -60,7 +88,7 @@ class Single_prod extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Hero(
-        tag: product_name,
+        tag: Text("hero 1"),
         child: Material(
           child: InkWell(
             onTap: () {
@@ -69,11 +97,14 @@ class Single_prod extends StatelessWidget {
             child: GridTile(
               footer: Container(
                 color: Colors.white70,
-                child: ListTile(
-                  leading: Text(product_name,style: TextStyle(fontWeight: FontWeight.bold),),
-                title: Text("\$$prod_price",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w800),),
-                subtitle: Text("\$$prod_old_price",style: TextStyle(color: Colors.black54,fontWeight: FontWeight.w800,decoration: TextDecoration.lineThrough),),
-                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(product_name,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),),
+                    ),
+                    Text("\$${prod_price}",style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
+                  ],
+                )
               ),
               child: Image.asset(prod_picture,
               fit: BoxFit.cover,
