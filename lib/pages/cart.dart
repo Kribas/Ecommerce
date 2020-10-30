@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopsolutions/components/cart_product.dart';
 
 class Cart extends StatefulWidget {
   @override
@@ -17,6 +18,8 @@ class _CartState extends State<Cart> {
           IconButton(icon: Icon(Icons.search,color: Colors.white,), onPressed: () {}),
         ],
       ),
+
+      body: Cart_products(),
 
       bottomNavigationBar: Container(
         color: Colors.white,
