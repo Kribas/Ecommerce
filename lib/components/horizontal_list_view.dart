@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HorizontalList extends StatelessWidget {
+class HorizontalListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +15,6 @@ class HorizontalList extends StatelessWidget {
           Category(image_location: 'images/cats/informal.png',image_caption: 'Informal',),
           Category(image_location: 'images/cats/accessories.png',image_caption: 'Accessories',),
           Category(image_location: 'images/cats/shoe.png',image_caption: 'Shoe',),
-
         ],
       ),
     );
@@ -26,27 +25,25 @@ class Category extends StatelessWidget {
   final String image_location;
   final String image_caption;
 
-  Category({this.image_location,this.image_caption});
-
+  Category({this.image_location, this.image_caption});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(2.0),
-      child: InkWell(
+    return Padding(padding: EdgeInsets.all(2.0),
+    child: Container(
+      width: 100,
+      child: ListTile(
         onTap: () {},
-        child: Container(
-          width: 100,
-          child: ListTile(
-            title: Image.asset(image_location,
-            width: 100,
-              height: 80.0,
-            ),
-            subtitle: Container(
-                alignment: Alignment.topCenter,
-                child: Text(image_caption)),
-          ),
+        title: Image.asset(image_location,
+        width: 100,
+          height: 80,
         ),
+        subtitle: Container(
+            alignment: Alignment.topCenter,
+            child: Text(image_caption,style: TextStyle(
+              fontSize: 12.0
+            ),)),
       ),
+    ),
     );
   }
 }

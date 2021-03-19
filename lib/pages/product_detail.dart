@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -9,11 +10,11 @@ class ProductDetails extends StatefulWidget {
   final product_detail_picture;
 
   ProductDetails(
-  {this.product_detail_name,
-  this.product_detail_new_price,
-    this.product_detail_old_price,
-    this.product_detail_picture
-  }
+      {this.product_detail_name,
+        this.product_detail_new_price,
+        this.product_detail_old_price,
+        this.product_detail_picture
+      }
       );
 
   @override
@@ -57,8 +58,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     children: [
                       Expanded(
                         child: Text('\$${widget.product_detail_old_price}',
-                      style: TextStyle(
-                          color: Colors.grey,decoration: TextDecoration.lineThrough)
+                            style: TextStyle(
+                                color: Colors.grey,decoration: TextDecoration.lineThrough)
                         ),
                       ),
                       Expanded(
@@ -79,35 +80,35 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: MaterialButton(onPressed: () {
                   showDialog(context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Size'),
-                      content: Text('Choose the size'),
-                      actions: [
-                        MaterialButton(onPressed: () {
-                          Navigator.of(context).pop(context);
-                        },
-                        child: Text('close'),
-                        )
-                      ],
-                    );
-                  }
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Size'),
+                          content: Text('Choose the size'),
+                          actions: [
+                            MaterialButton(onPressed: () {
+                              Navigator.of(context).pop(context);
+                            },
+                              child: Text('close'),
+                            )
+                          ],
+                        );
+                      }
                   );
                 },
-                color: Colors.white,
-                textColor: Colors.grey,
+                  color: Colors.white,
+                  textColor: Colors.grey,
                   elevation: 0.2,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text('Size'),
-                    ),
-                    Expanded(
-                      child: Icon(Icons.arrow_drop_down),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text('Size'),
+                      ),
+                      Expanded(
+                        child: Icon(Icons.arrow_drop_down),
 
-                    )
-                  ],
-                ),
+                      )
+                    ],
+                  ),
                 ),
               ),
 
@@ -251,10 +252,12 @@ class _ProductDetailsState extends State<ProductDetails> {
 
           Divider(),
 
-          Text("Similar Products"),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Similar Products")),
 
           Container(
-            height: 360,
+            height: 340,
             child: Similar_Products(),
           )
         ],
@@ -278,14 +281,14 @@ class _Similar_ProductsState extends State<Similar_Products> {
     },
 
     {
-      "name":"Red dress",
+      "name":"Hills",
       "picture":"images/products/hills1.jpeg",
       "old_price":100,
       "price":50
     },
 
     {
-      "name":"Red dress",
+      "name":"Dress",
       "picture":"images/products/dress2.jpeg",
       "old_price":100,
       "price":50
@@ -357,4 +360,6 @@ class Similar_single_prod extends StatelessWidget {
     );
   }
 }
+
+
 
