@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:shopsolutions/components/horizontal_list_view.dart';
 import 'package:shopsolutions/components/products.dart';
+import 'package:shopsolutions/pages/cart.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -44,7 +45,9 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.red,
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {},icon: Icon(Icons.shopping_cart),)
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Cart()));
+          },icon: Icon(Icons.shopping_cart),)
         ],
       ),
       drawer: Drawer(
