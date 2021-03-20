@@ -16,6 +16,30 @@ class _CartState extends State<Cart> {
           IconButton(onPressed: () {}, icon: Icon(Icons.search)),
         ],
       ),
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                title: Text('Total:'),
+                subtitle: Text('\$230'),
+              ),
+            ),
+
+            Expanded(
+              child: MaterialButton(
+                  child: Text('Check out',style: TextStyle(
+                    color: Colors.white
+                  ),),
+                  color: Colors.red,
+                  onPressed: () {}),
+            )
+
+
+          ],
+        ),
+      ),
     );
   }
 }

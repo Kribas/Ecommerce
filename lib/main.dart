@@ -83,7 +83,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text('Shopping Cart'),
               leading: Icon(Icons.shopping_cart,color: Colors.red,),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Cart()));
+              },
             ),
             ListTile(
               title: Text('Favourites'),
