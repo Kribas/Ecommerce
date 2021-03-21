@@ -24,6 +24,7 @@ class _CartProductsState extends State<CartProducts> {
       "color": "Red",
       "quantity": 1
     },
+
   ];
 
   @override
@@ -67,18 +68,21 @@ class Single_cart_product extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        leading: Image.asset(cart_prod_picture),
         title: Text(cart_prod_name),
         subtitle: Column(
           children: [
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(2.0),
                   child: Text("Size:"),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: Text(cart_prod_size),
+                  child: Text(cart_prod_size,
+                  style: TextStyle(color: Colors.red),
+                  ),
                 ),
 
                 Padding(
@@ -87,14 +91,33 @@ class Single_cart_product extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(cart_prod_color),
+                  child: Text(cart_prod_color,style: TextStyle(color: Colors.red),),
                 )
               ],
-            )
+            ),
+
+            Container(
+                alignment: Alignment.topLeft,
+                child: Text('\$${cart_prod_price}',style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red
+                )
+                ),
+            ),
+          ],
+        ),
+        trailing: Column(
+          children: [
+            Expanded(child: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_drop_up))),
+            Text('$cart_prod_qty'),
+            Expanded(child: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_drop_down))),
+
           ],
         ),
       ),
     );
   }
+
 }
 
