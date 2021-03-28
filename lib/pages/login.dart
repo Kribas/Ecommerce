@@ -15,6 +15,9 @@ class _LoginState extends State<Login> {
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
   SharedPreferences preferences;
   bool loading = false;
   bool isLoggedIn = false;
@@ -22,25 +25,27 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    isSignedIn();
+    //isSignedIn();
+
   }
 
-  void isSignedIn() async {
-    setState(() {
-      loading = true;
-    });
-
-    preferences = await SharedPreferences.getInstance();
-    isLoggedIn = await googleSignIn.isSignedIn();
-
-    if(isLoggedIn == true) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-    }
-
-    setState(() {
-      loading = false;
-    });
-  }
+//  void isSignedIn() async {
+//    setState(() {
+//      loading = true;
+//    });
+//
+//    preferences = await SharedPreferences.getInstance();
+//
+//    isLoggedIn = await googleSignIn.isSignedIn();
+//
+//    if(isLoggedIn == true) {
+//      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+//    }
+//
+//    setState(() {
+//      loading = false;
+//    });
+//  }
 
   Future handleSignIn() async {
     preferences = await SharedPreferences.getInstance();
@@ -90,48 +95,48 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return  Scaffold(
 
-      appBar: AppBar(
-
-        backgroundColor: Colors.white,
-
-        centerTitle: true,
-
-        title: new Text(
-
-          "Login",
-
-          style: TextStyle(color: Colors.red.shade900),
-
-        ),
-
-      ),
-
       body: Stack(
-
         children: <Widget>[
+          Image.asset('images/backgroundImage.jpg',
+          fit: BoxFit.cover,
+          width: double.infinity,
+          ),
+          Container(
+            color: Colors.red.withOpacity(0.2),
+            width: double.infinity,
+            height: double.infinity,
+          ),
 
+          Container(
+            alignment: Alignment.center,
+            child: Center(
+              child: Form(
+                  key: _formKey,
+                  child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "Email = "
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailTextController,
+                    validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
+                  )
+                ],
+              )),
+            ),
+          ),
           Visibility(
-
               visible: loading ?? true,
-
               child: Center(
-
                 child: Container(
-
                   alignment: Alignment.center,
-
                   color: Colors.white.withOpacity(0.9),
-
                   child: CircularProgressIndicator(
-
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-
                   ),
-
                 ),
-
               ))
-
         ],
 
       ),
@@ -139,27 +144,16 @@ class _LoginState extends State<Login> {
       bottomNavigationBar: Container(
 
         child: Padding(
-
           padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0, bottom: 8.0),
-
           child: FlatButton(
-
               color: Colors.red,
-
               onPressed: () {
-
                 handleSignIn();
-
               },
-
               child: Text(
-
                 "Sign in / Sign up with google",
-
                 style: TextStyle(color: Colors.white),
-
               )),
-
         ),
 
       ),
