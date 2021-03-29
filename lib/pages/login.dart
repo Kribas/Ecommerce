@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shopsolutions/pages/signup.dart';
 import 'Home.dart';
 
 class Login extends StatefulWidget {
@@ -13,11 +14,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
+
   SharedPreferences preferences;
   bool loading = false;
   bool isLoggedIn = false;
@@ -29,68 +30,28 @@ class _LoginState extends State<Login> {
 
   }
 
-//  void isSignedIn() async {
-//    setState(() {
-//      loading = true;
-//    });
-//
-//    preferences = await SharedPreferences.getInstance();
-//
-//    isLoggedIn = await googleSignIn.isSignedIn();
-//
-//    if(isLoggedIn == true) {
-//      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-//    }
-//
-//    setState(() {
-//      loading = false;
-//    });
-//  }
-
-  Future handleSignIn() async {
-    preferences = await SharedPreferences.getInstance();
-
+  void isSignedIn() async {
     setState(() {
       loading = true;
     });
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication = await googleUser.authentication;
-    AuthCredential credential = GoogleAuthProvider.credential(
-      idToken: googleSignInAuthentication.idToken,
-      accessToken: googleSignInAuthentication.accessToken
-    );
-
-    User firebaseUser = (await firebaseAuth.signInWithCredential(credential)).user;
-
-    if(firebaseUser != null) {
-      final QuerySnapshot result = await FirebaseFirestore.instance.collection("users").where("id",isEqualTo: firebaseUser.uid).get();
-      final List<DocumentSnapshot> documents = result.docs;
-      if(documents.length == 0) {
-        // insert the user to our collection
-        FirebaseFirestore.instance.collection("users").doc(firebaseUser.uid).set({
-          "id" : firebaseUser.uid,
-          "username" : firebaseUser.displayName,
-          "profilePicture" : firebaseUser.photoURL
-        });
-        await preferences.setString("id", firebaseUser.uid);
-        await preferences.setString("username", firebaseUser.displayName);
-        await preferences.setString("photoUrl", firebaseUser.photoURL);
-      }else {
-        await preferences.setString("id", documents[0]['id']);
-        await preferences.setString("username", documents[0]['username']);
-        await preferences.setString("photoUrl", documents[0]['photoUrl']);
-      }
-
-      Fluttertoast.showToast(msg: "Login was successful");
-      setState(() {
-        loading = false;
-      });
+    if(isLoggedIn == true) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-    }else {
-      Fluttertoast.showToast(msg: "Login Failed");
     }
+
+    setState(() {
+      loading = false;
+    });
   }
+
+//  Future handleSignIn() async {
+//    preferences = await SharedPreferences.getInstance();
+//
+//    setState(() {
+//      loading = true;
+//    });
+//  }
+
     @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -116,7 +77,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
                     child: Material(
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.white.withOpacity(0.8),
@@ -137,7 +98,7 @@ class _LoginState extends State<Login> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
                     child: Material(
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.white.withOpacity(0.8),
@@ -157,10 +118,7 @@ class _LoginState extends State<Login> {
                             }else if(value.length < 6) {
                               return "The password has to be atleast 6 characters long";
                             }
-
                             return null;
-
-
                           }
                         ),
                       ),
@@ -168,7 +126,7 @@ class _LoginState extends State<Login> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
                     child: Material(
                       borderRadius: BorderRadius.circular(20.0),
                       color: Colors.blue,
@@ -187,37 +145,21 @@ class _LoginState extends State<Login> {
                     ),
                   ),
 
-                  Expanded(child: Container()),
-
-                  Divider(color: Colors.white,),
-
-                  Text('Other login in option',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Material(
-                        borderRadius: BorderRadius.circular(20.0),
-                        color: Colors.red,
-                        elevation: 0.0,
-                        child: MaterialButton(
-                          onPressed: () {
-                            handleSignIn();
-                          },
-                          minWidth: MediaQuery.of(context).size.width,
-                          child: Text('Google',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0
-                            ),
-                          ),
-                        )
-                    ),
+                    child: Text('Forgot password',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                      },
+                      child: Text("Sign up",style: TextStyle(
+                        color: Colors.red
+                      ),),
+                    )
                   )
                 ],
               )
