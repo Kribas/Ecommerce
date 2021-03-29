@@ -98,32 +98,130 @@ class _LoginState extends State<Login> {
       body: Stack(
         children: <Widget>[
           Image.asset('images/backgroundImage.jpg',
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
           width: double.infinity,
+            height: double.infinity,
           ),
           Container(
-            color: Colors.red.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.4),
             width: double.infinity,
             height: double.infinity,
           ),
 
-          Container(
-            alignment: Alignment.center,
+          Padding(
+            padding: const EdgeInsets.only(top: 200.0),
             child: Center(
               child: Form(
                   key: _formKey,
                   child: Column(
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Email = "
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white.withOpacity(0.8),
+                      elevation: 0.0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            icon: Icon(Icons.alternate_email),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailTextController,
+                          validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
+                        ),
+                      ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _emailTextController,
-                    validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white.withOpacity(0.8),
+                      elevation: 0.0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            icon: Icon(Icons.lock_outline),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _passwordTextController,
+                          validator: (value) {
+                            if(value.isEmpty) {
+                              return "The password field cannot be empty";
+                            }else if(value.length < 6) {
+                              return "The password has to be atleast 6 characters long";
+                            }
+
+                            return null;
+
+
+                          }
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.blue,
+                      elevation: 0.0,
+                      child: MaterialButton(
+                        onPressed: () {},
+                        minWidth: MediaQuery.of(context).size.width,
+                        child: Text('Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0
+                        ),
+                        ),
+                      )
+                    ),
+                  ),
+
+                  Expanded(child: Container()),
+
+                  Divider(color: Colors.white,),
+
+                  Text('Other login in option',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.red,
+                        elevation: 0.0,
+                        child: MaterialButton(
+                          onPressed: () {
+                            handleSignIn();
+                          },
+                          minWidth: MediaQuery.of(context).size.width,
+                          child: Text('Google',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0
+                            ),
+                          ),
+                        )
+                    ),
                   )
                 ],
-              )),
+              )
+              ),
             ),
           ),
           Visibility(
@@ -140,24 +238,6 @@ class _LoginState extends State<Login> {
         ],
 
       ),
-
-      bottomNavigationBar: Container(
-
-        child: Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0, bottom: 8.0),
-          child: FlatButton(
-              color: Colors.red,
-              onPressed: () {
-                handleSignIn();
-              },
-              child: Text(
-                "Sign in / Sign up with google",
-                style: TextStyle(color: Colors.white),
-              )),
-        ),
-
-      ),
-
     );
 
     }
