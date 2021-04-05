@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -8,13 +7,13 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   TextEditingController _nameTextController = TextEditingController();
   String gender;
+  String groupValue = "male";
 
   bool loading = false;
 
@@ -66,6 +65,41 @@ class _SignUpState extends State<SignUp> {
                                   return null;
                                 }
                             ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        child: Container(
+                          color: Colors.white.withOpacity(0.4),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ListTile(
+                                  title: Text("male",
+                                    style: TextStyle(
+                            color: Colors.white
+                          ),),
+
+                                  trailing: Radio(value: "male",
+                                      groupValue: groupValue,
+                                      onChanged: (e) => valueChanged(e)),
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  title: Text("female",
+                                    style: TextStyle(
+                                    color: Colors.white
+                                  ),
+                                  ),
+                                  trailing: Radio(value: "female",
+                                      groupValue: groupValue,
+                                      onChanged: (e) => valueChanged(e)),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -152,12 +186,12 @@ class _SignUpState extends State<SignUp> {
                         padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
                         child: Material(
                             borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.blue,
+                            color: Colors.red.shade700,
                             elevation: 0.0,
                             child: MaterialButton(
                               onPressed: () {},
                               minWidth: MediaQuery.of(context).size.width,
-                              child: Text('Register',
+                              child: Text('Sign up',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -178,7 +212,7 @@ class _SignUpState extends State<SignUp> {
                             child: Text("Login",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.red
+                                color: Colors.blue
                             ),),
                           )
                       )
@@ -203,5 +237,15 @@ class _SignUpState extends State<SignUp> {
       ),
     );
 
+  }
+
+  valueChanged(e) {
+    setState(() {
+      if(e == "male") {
+        groupValue = e;
+      }else if(e == "female") {
+        groupValue = e;
+      }
+    });
   }
 }
