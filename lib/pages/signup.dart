@@ -30,122 +30,91 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
-          Image.asset('images/backgroundImage.jpg',
-            fit: BoxFit.fill,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.4),
-            width: double.infinity,
-            height: double.infinity,
-          ),
-
           Padding(
-            padding: const EdgeInsets.only(top: 200.0),
+            padding: const EdgeInsets.only(top: 0.0),
             child: Center(
               child: Form(
                   key: _formKey,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.white.withOpacity(0.8),
-                          elevation: 0.0,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: "Full Name",
-                                  icon: Icon(Icons.person),
-                                    border: InputBorder.none
-
-                                ),
-                                keyboardType: TextInputType.text,
-                                controller: _nameTextController,
-                                validator: (value) {
-                                  if(value.isEmpty) {
-                                    return "The name field cannot be empty";
-                                  }
-                                  return null;
-                                }
-                            ),
-                          ),
-                        ),
-                      ),
-
-
-
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.white.withOpacity(0.8),
-                          elevation: 0.0,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: "Email",
-                                icon: Icon(Icons.alternate_email),
-                                  border: InputBorder.none
-                              ),
-                              keyboardType: TextInputType.emailAddress,
-                              controller: _emailTextController,
-                              validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Container(
-                          color: Colors.white.withOpacity(0.4),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ListTile(
-                                  title: Text("male",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),),
+                            alignment: Alignment.topCenter,
+                            child: Image.asset(
+                              'images/cart.png',
+                              width: 120.0,
+//                height: 240.0,
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey.withOpacity(0.2),
+                          elevation: 0.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: ListTile(
+                              title: TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: "Full Name",
+                                    icon: Icon(Icons.person),
+                                      border: InputBorder.none
 
-                                  trailing: Radio(value: "male",
-                                      groupValue: groupValue,
-                                      onChanged: (e) => valueChanged(e)),
-                                ),
-                              ),
-                              Expanded(
-                                child: ListTile(
-                                  title: Text("female",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),
                                   ),
-                                  trailing: Radio(value: "female",
-                                      groupValue: groupValue,
-                                      onChanged: (e) => valueChanged(e)),
-                                ),
-                              )
-                            ],
+                                  keyboardType: TextInputType.text,
+                                  controller: _nameTextController,
+                                  validator: (value) {
+                                    if(value.isEmpty) {
+                                      return "The name field cannot be empty";
+                                    }
+                                    return null;
+                                  }
+                              ),
+                            ),
                           ),
                         ),
                       ),
+
+
+
 
                       Padding(
                         padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.grey.withOpacity(0.2),
+                          elevation: 0.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: ListTile(
+                              title: TextFormField(
+                                decoration: InputDecoration(
+                                  labelText: "Email",
+                                  icon: Icon(Icons.alternate_email),
+                                    border: InputBorder.none
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                controller: _emailTextController,
+                                validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey.withOpacity(0.2),
                           elevation: 0.0,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12.0),
@@ -266,13 +235,62 @@ class _SignUpState extends State<SignUp> {
                             onTap: () {
                               Navigator.pop(context);
                             },
-                            child: Text("Login",
+                            child: Text("I already have an account",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.blue
+                                color: Colors.deepOrange,
+                                fontSize: 16
                             ),),
                           )
-                      )
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Divider(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Or Sign up with", style: TextStyle(fontSize: 20,color: Colors.grey),),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Divider(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                            child: Material(
+                                child: MaterialButton(
+                                    onPressed: () {},
+                                    child: Image.asset("images/fb.png", width: 60,)
+                                )),
+                          ),
+
+                          Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                            child: Material(
+                                child: MaterialButton(
+                                    onPressed: () {},
+                                    child: Image.asset("images/ggg.png", width: 60,)
+                                )),
+                          ),
+                        ],
+                      ),
                     ],
                   )
               ),
