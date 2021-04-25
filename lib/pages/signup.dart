@@ -31,6 +31,7 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return  Scaffold(
 
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Image.asset('images/backgroundImage.jpg',

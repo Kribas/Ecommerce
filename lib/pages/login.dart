@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    //isSignedIn();
+    isSignedIn();
 
   }
 
@@ -36,7 +36,15 @@ class _LoginState extends State<Login> {
       loading = true;
     });
 
-    if(isLoggedIn == true) {
+    final User user = firebaseAuth.currentUser;
+
+    if(user != null) {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }
+
+    if(isLoggedIn) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
     }
 
@@ -55,131 +63,196 @@ class _LoginState extends State<Login> {
 
     @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height / 3;
     return  Scaffold(
-
-      body: Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset('images/backgroundImage.jpg',
-          fit: BoxFit.fill,
-          width: double.infinity,
-            height: double.infinity,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.4),
-            width: double.infinity,
-            height: double.infinity,
-          ),
-
           Padding(
-            padding: const EdgeInsets.only(top: 200.0),
-            child: Center(
-              child: Form(
-                  key: _formKey,
-                  child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white.withOpacity(0.8),
-                      elevation: 0.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            icon: Icon(Icons.alternate_email),
+            padding: const EdgeInsets.all(28.0),
+            child: Container(
+                alignment: Alignment.topCenter,
+                child: Image.asset(
+                  'images/cart.png',
+                  width: 120.0,
+//                height: 240.0,
+                )),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0.0),
+              child: Center(
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.grey.withOpacity(0.2),
+                            elevation: 0.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: TextFormField(
+                                controller: _emailTextController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Email",
+                                  icon: Icon(Icons.alternate_email),
+                                ),
+                                validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null
+                              ),
+                            ),
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailTextController,
-                          validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
                         ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white.withOpacity(0.8),
-                      elevation: 0.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            icon: Icon(Icons.lock_outline),
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.grey.withOpacity(0.2),
+                            elevation: 0.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: TextFormField(
+                                controller: _passwordTextController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Password",
+                                  icon: Icon(Icons.lock_outline),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "The password field cannot be empty";
+                                  } else if (value.length < 6) {
+                                    return "the password has to be at least 6 characters long";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _passwordTextController,
-                          validator: (value) {
-                            if(value.isEmpty) {
-                              return "The password field cannot be empty";
-                            }else if(value.length < 6) {
-                              return "The password has to be atleast 6 characters long";
-                            }
-                            return null;
-                          }
                         ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.blue,
-                      elevation: 0.0,
-                      child: MaterialButton(
-                        onPressed: () {},
-                        minWidth: MediaQuery.of(context).size.width,
-                        child: Text('Login',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Material(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Colors.deepOrange,
+                              elevation: 0.0,
+                              child: MaterialButton(
+                                onPressed: () {},
+                                minWidth: MediaQuery.of(context).size.width,
+                                child: Text(
+                                  "Login",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0),
+                                ),
+                              )),
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Forgot password",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SignUp()));
+                                    },
+                                    child: Text(
+                                      "Create an account",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.black),
+                                    ))),
+                          ],
                         ),
-                      )
-                    ),
-                  ),
 
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Forgot password',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)
-                  ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Divider(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Or", style: TextStyle(fontSize: 20,color: Colors.grey),),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Divider(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
-                      },
-                      child: Text("Sign up",style: TextStyle(
-                        color: Colors.red
-                      ),),
-                    )
-                  )
-                ],
-              )
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                              child: Material(
+                                  child: MaterialButton(
+                                      onPressed: () {},
+                                      child: Image.asset("images/fb.png", width: 60,)
+                                  )),
+                            ),
+
+                            Padding(
+                              padding:
+                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                              child: Material(
+                                  child: MaterialButton(
+                                      onPressed: () {},
+                                      child: Image.asset("images/ggg.png", width: 60,)
+                                  )),
+                            ),
+                          ],
+                        ),
+
+                      ],
+                    )),
+
               ),
             ),
           ),
           Visibility(
-              visible: loading ?? true,
-              child: Center(
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Colors.white.withOpacity(0.9),
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                  ),
+            visible: loading ?? true,
+            child: Center(
+              child: Container(
+                alignment: Alignment.center,
+                color: Colors.white.withOpacity(0.9),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
-
       ),
     );
 
