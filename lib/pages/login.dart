@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopsolutions/commons/loading.dart';
+import 'package:shopsolutions/pages/Home.dart';
+import 'package:shopsolutions/commons/common.dart';
 import 'package:shopsolutions/pages/signup.dart';
-import 'Home.dart';
+import '../provider/user_provider.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,78 +15,81 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _passwordTextController = TextEditingController();
+  final _key = GlobalKey<ScaffoldState>();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
 
-  SharedPreferences preferences;
-  bool loading = false;
-  bool isLoggedIn = false;
 
-  @override
-  void initState() {
-    super.initState();
-    isSignedIn();
-
-  }
-
-  void isSignedIn() async {
-    setState(() {
-      loading = true;
-    });
-
-    final User user = firebaseAuth.currentUser;
-
-    if(user != null) {
-      setState(() {
-        isLoggedIn = true;
-      });
-    }
-
-    if(isLoggedIn) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-    }
-
-    setState(() {
-      loading = false;
-    });
-  }
-
-//  Future handleSignIn() async {
-//    preferences = await SharedPreferences.getInstance();
-//
+//  void isSignedIn() async {
 //    setState(() {
 //      loading = true;
 //    });
+//
+//    final User user = firebaseAuth.currentUser;
+//
+//
+//    if (user != null) {
+//      setState(() => isLogedin = true);
+//    }
+//
+//    if (isLogedin) {
+//      Navigator.pushReplacement(
+//          context, MaterialPageRoute(builder: (context) => HomePage()));
+//    }
+//
+//    setState(() {
+//      loading = false;
+//    });
 //  }
 
-    @override
+
+
+
+
+  @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height / 3;
-    return  Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    final user = Provider.of<UserProvider>(context);
+
+
+    return Scaffold(
+      key: _key,
+      resizeToAvoidBottomInset: false,
+      body: user.status == Status.Authenticating ? Loading()
+      : Stack(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(28.0),
-            child: Container(
-                alignment: Alignment.topCenter,
-                child: Image.asset(
-                  'images/cart.png',
-                  width: 120.0,
-//                height: 240.0,
-                )),
-          ),
-          Center(
+
+          Container(
             child: Padding(
-              padding: const EdgeInsets.only(top: 0.0),
-              child: Center(
+              padding: const EdgeInsets.only(left:20, right:20.0, top: 120, bottom: 120),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[350],
+                      blurRadius:
+                      20.0, // has the effect of softening the shadow
+                    )
+                  ],
+                ),
                 child: Form(
                     key: _formKey,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Container(
+                              alignment: Alignment.topCenter,
+                              child: Image.asset(
+                                'images/cart.png',
+                                width: 120.0,
+//                height: 240.0,
+                              )),
+                        ),
+
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -96,13 +100,13 @@ class _LoginState extends State<Login> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: TextFormField(
-                                controller: _emailTextController,
+                                controller: _email,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email",
                                   icon: Icon(Icons.alternate_email),
                                 ),
-                                validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null
+                                validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
                               ),
                             ),
                           ),
@@ -117,7 +121,7 @@ class _LoginState extends State<Login> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: TextFormField(
-                                controller: _passwordTextController,
+                                controller: _password,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
@@ -140,10 +144,17 @@ class _LoginState extends State<Login> {
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                           child: Material(
                               borderRadius: BorderRadius.circular(20.0),
-                              color: Colors.deepOrange,
+                              color: deepOrange,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if(_formKey.currentState.validate()) {
+                                    if(!await user.signIn(_email.text, _password.text))
+                                      _key.currentState.showSnackBar(
+                                        SnackBar(content: Text("SignIn failed"))
+                                      );
+                                  }
+                                },
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
                                   "Login",
@@ -164,7 +175,7 @@ class _LoginState extends State<Login> {
                                 "Forgot password",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: black,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -191,47 +202,21 @@ class _LoginState extends State<Login> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Divider(),
+                                child: Text("or sign in with", style: TextStyle(fontSize: 18,color: Colors.grey),),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Or", style: TextStyle(fontSize: 20,color: Colors.grey),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Divider(
-                                  color: Colors.black,
+                                child: MaterialButton(
+                                    onPressed: () {},
+                                    child: Image.asset("images/ggg.png", width: 30,)
                                 ),
                               ),
+
                             ],
                           ),
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                              child: Material(
-                                  child: MaterialButton(
-                                      onPressed: () {},
-                                      child: Image.asset("images/fb.png", width: 60,)
-                                  )),
-                            ),
-
-                            Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                              child: Material(
-                                  child: MaterialButton(
-                                      onPressed: () {},
-                                      child: Image.asset("images/ggg.png", width: 60,)
-                                  )),
-                            ),
-                          ],
                         ),
 
                       ],
@@ -240,23 +225,12 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          Visibility(
-            visible: loading ?? true,
-            child: Center(
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white.withOpacity(0.9),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
-
-    }
   }
 
-
+  void validate() async {
+    
+  }
+}

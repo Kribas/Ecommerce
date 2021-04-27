@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shopsolutions/components/horizontal_list_view.dart';
+import 'package:flutter/material.dart';
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:provider/provider.dart';
+
+//my own imports
 import 'package:shopsolutions/components/products.dart';
-import 'package:shopsolutions/pages/cart.dart';
+import 'package:shopsolutions/commons/common.dart';
 import 'package:shopsolutions/pages/login.dart';
+import 'package:shopsolutions/provider/user_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,133 +16,165 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController _searchController =  TextEditingController();
   @override
   Widget build(BuildContext context) {
-//    Widget image_coursel = Container(
-//      height: 200,
-//      child: Carousel(
-//        boxFit: BoxFit.cover,
-//        images: [
-//          Image.asset('images/c1.jpg'),
-//          Image.asset('images/m1.jpeg'),
-//          Image.asset('images/m2.jpg'),
-//          Image.asset('images/w1.jpeg'),
-//          Image.asset('images/w3.jpeg'),
-//          Image.asset('images/w4.jpeg'),
-//        ],
-//        autoplay: false,
-//        dotSize: 4.0,
-//        indicatorBgPadding: 2.0,
-//        dotBgColor: Colors.transparent,
-//      ),
-//    );
+    final user = Provider.of<UserProvider>(context);
+
+    Widget image_carousel = new Container(
+      height: 200.0,
+      child:  new Carousel(
+        boxFit: BoxFit.cover,
+        images: [
+          AssetImage('images/1.jpg'),
+          AssetImage('images/sale.png'),
+          AssetImage('images/c1.jpg'),
+          AssetImage('images/w4.jpeg'),
+          AssetImage('images/m2.jpg'),
+        ],
+        autoplay: false,
+        dotBgColor: Colors.transparent,
+        dotSize: 4.0,
+        indicatorBgPadding: 2.0,
+      ),
+    );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ShopSolutions'),
-        backgroundColor: Colors.red,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Cart()));
-          }, icon: Icon(Icons.shopping_cart),)
+      appBar: new AppBar(
+        iconTheme: IconThemeData(color: deepOrange),
+        elevation: 0.1,
+        backgroundColor: white,
+        title: Material(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.grey[100],
+          elevation: 0.0,
+          child: TextFormField(
+            controller: _searchController,
+            decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(10.0),
+                hintText: "Search...",
+                border: InputBorder.none),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "The search field cannot be empty";
+              }
+              return null;
+            },
+          ),
+        ),
+        actions: <Widget>[
+
+          new IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                color: deepOrange,
+              ),
+              onPressed: () {})
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                  color: Colors.red
+      drawer: new Drawer(
+        child: new ListView(
+          children: <Widget>[
+//            header
+            new UserAccountsDrawerHeader(
+              accountName: Text('Kribas Rimal'),
+              accountEmail: Text('kribasrimal180@gmail.com'),
+              currentAccountPicture: GestureDetector(
+                child: new CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  child: Icon(Icons.person, color: Colors.white,),
+                ),
               ),
-              accountName: Text("Kribas Rimal"),
-              accountEmail: Text("kribasrimal180@gmail.com"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://avatars.githubusercontent.com/u/32868850?s=460&u=f2b361ae956461e579db724bffd099a2b5757163&v=4'),
+              decoration: new BoxDecoration(
+                  color: deepOrange
               ),
             ),
 
-            ListTile(
-              title: Text('Home'),
-              leading: Icon(Icons.home, color: Colors.red),
-              onTap: () {},
+//            body
+
+            InkWell(
+              onTap: (){},
+              child: ListTile(
+                title: Text('Home Page'),
+                leading: Icon(Icons.home),
+              ),
             ),
 
-            ListTile(
-              title: Text('My Account'),
-              leading: Icon(Icons.person, color: Colors.red),
-              onTap: () {},
+            InkWell(
+              onTap: (){},
+              child: ListTile(
+                title: Text('My account'),
+                leading: Icon(Icons.person),
+              ),
             ),
-            ListTile(
-              title: Text('My Orders'),
-              leading: Icon(Icons.shopping_bag, color: Colors.red),
-              onTap: () {},
+
+            InkWell(
+              onTap: (){},
+              child: ListTile(
+                title: Text('My Orders'),
+                leading: Icon(Icons.shopping_basket),
+              ),
             ),
-            ListTile(
-              title: Text('Shopping Cart'),
-              leading: Icon(Icons.shopping_cart, color: Colors.red,),
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Cart()));
-              },
+
+            InkWell(
+              onTap: (){},
+              child: ListTile(
+                title: Text('Categoris'),
+                leading: Icon(Icons.dashboard),
+              ),
             ),
-            ListTile(
-              title: Text('Favourites'),
-              leading: Icon(Icons.favorite, color: Colors.red),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text('Settings'),
-              leading: Icon(Icons.settings,),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Text('About'),
-              leading: Icon(Icons.help,),
-              onTap: () {},
+
+            InkWell(
+              onTap: (){},
+              child: ListTile(
+                title: Text('Favourites'),
+                leading: Icon(Icons.favorite),
+              ),
             ),
 
             Divider(),
 
             InkWell(
-              onTap: () {
-                FirebaseAuth.instance.signOut().then((value) => {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()))
-                });
+              onTap: (){
+                user.signOut();
               },
               child: ListTile(
-                title: Text('Log Out'),
-                leading: Icon(Icons.transit_enterexit,
-                color: Colors.grey,
-                ),
+
+                title: Text('Log out'),
+                leading: Icon(Icons.transit_enterexit, color: Colors.grey,),
               ),
-            )
+            ),
+
           ],
         ),
       ),
-      body: Column(
-        children: [
-          //image_coursel,
 
-          Padding(padding: EdgeInsets.all(4.0),
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text('Categories')),
+      body: new Column(
+        children: <Widget>[
+          //image carousel begins here
+          image_carousel,
+
+//          //padding widget
+//          new Padding(padding: const EdgeInsets.all(4.0),
+//            child: Container(
+//                alignment: Alignment.centerLeft,
+//                child: new Text('Categories')),),
+//
+//          //Horizontal list view begins here
+//          HorizontalList(),
+
+          //padding widget
+          Row(
+            children: <Widget>[
+              Padding(padding: const EdgeInsets.all(14.0),
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: new Text('Recent products')),),
+            ],
           ),
 
-          //Horizontal ListView
-          HorizontalListView(),
-
-          Padding(padding: EdgeInsets.all(8.0),
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text('Recent Products')),
-          ),
-
-          //gridView
-          Flexible(child: Products())
+          //grid view
+          Flexible(child: Products()),
 
         ],
       ),

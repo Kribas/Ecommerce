@@ -1,7 +1,14 @@
+import 'dart:async';
+
+import 'package:provider/provider.dart';
+import 'package:shopsolutions/commons/common.dart';
+import 'package:shopsolutions/commons/loading.dart';
+import 'package:shopsolutions/db/auth.dart';
+import 'package:shopsolutions/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shopsolutions/db/users.dart';
 import 'package:flutter/material.dart';
-import 'package:shopsolutions/pages/Home.dart';
+import 'package:shopsolutions/provider/user_provider.dart';
+import '../db/users.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -9,38 +16,44 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
-  UserServices _userServices = UserServices();
-
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
-  TextEditingController _nameTextController = TextEditingController();
-  String gender;
-  String groupValue = "male";
+  final _key = GlobalKey<ScaffoldState>();
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _name = TextEditingController();
   bool hidePass = true;
-  bool hideConfirmPass = true;
-
-  bool loading = false;
-
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final user = Provider.of<UserProvider>(context);
+
+    return Scaffold(
+      key: _key,
       resizeToAvoidBottomInset: false,
-      body: Stack(
+      body: user.status == Status.Authenticating ? Loading()
+      : Stack(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(top: 0.0),
-            child: Center(
+            padding: const EdgeInsets.only(left:20, right:20.0, top: 120, bottom: 120),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[350],
+                    blurRadius:
+                    20.0, // has the effect of softening the shadow
+                  )
+                ],
+              ),
               child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Container(
@@ -52,7 +65,8 @@ class _SignUpState extends State<SignUp> {
                             )),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        padding:
+                        const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey.withOpacity(0.2),
@@ -61,31 +75,25 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.only(left: 12.0),
                             child: ListTile(
                               title: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: "Full Name",
-                                    icon: Icon(Icons.person),
-                                      border: InputBorder.none
-
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  controller: _nameTextController,
-                                  validator: (value) {
-                                    if(value.isEmpty) {
-                                      return "The name field cannot be empty";
-                                    }
-                                    return null;
+                                controller: _name,
+                                decoration: InputDecoration(
+                                    hintText: "Full name",
+                                    icon: Icon(Icons.person_outline),
+                                    border: InputBorder.none),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "The name field cannot be empty";
                                   }
+                                  return null;
+                                },
                               ),
                             ),
                           ),
                         ),
                       ),
-
-
-
-
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        padding:
+                        const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey.withOpacity(0.2),
@@ -94,13 +102,11 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.only(left: 12.0),
                             child: ListTile(
                               title: TextFormField(
+                                controller: _email,
                                 decoration: InputDecoration(
-                                  labelText: "Email",
-                                  icon: Icon(Icons.alternate_email),
-                                    border: InputBorder.none
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                                controller: _emailTextController,
+                                    hintText: "Email",
+                                    icon: Icon(Icons.alternate_email),
+                                    border: InputBorder.none),
                                 validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
                               ),
                             ),
@@ -108,10 +114,9 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
 
-
-
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        padding:
+                        const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey.withOpacity(0.2),
@@ -120,234 +125,104 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.only(left: 12.0),
                             child: ListTile(
                               title: TextFormField(
+                                controller: _password,
                                 obscureText: hidePass,
-                                  decoration: InputDecoration(
-                                    labelText: "Password",
+                                decoration: InputDecoration(
+                                    hintText: "Password",
                                     icon: Icon(Icons.lock_outline),
-                                    border: InputBorder.none
-                                  ),
-                                  keyboardType: TextInputType.emailAddress,
-                                  controller: _passwordTextController,
-                                  validator: (value) {
-                                    if(value.isEmpty) {
-                                      return "The password field cannot be empty";
-                                    }else if(value.length < 6) {
-                                      return "The password has to be atleast 6 characters long";
-                                    }
-                                    return null;
+                                    border: InputBorder.none),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "The password field cannot be empty";
+                                  } else if (value.length < 6) {
+                                    return "the password has to be at least 6 characters long";
                                   }
-                              ),
-                              trailing: IconButton(onPressed: () {
-
-                                if(hidePass == true) {
-                                  setState(() {
-                                    hidePass = false;
-                                  });
-                                }else if(hidePass == false){
-                                  setState(() {
-                                    hidePass = true;
-                                  });
-
-                                }
-
-                              },
-                                  icon: Icon(Icons.remove_red_eye)),
-
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.white.withOpacity(0.8),
-                          elevation: 0.0,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: ListTile(
-                              title: TextFormField(
-                                obscureText: hideConfirmPass,
-                                  decoration: InputDecoration(
-                                    labelText: "Confirm Password",
-                                    icon: Icon(Icons.lock_outline),
-                                    border: InputBorder.none
-                                  ),
-
-                                  keyboardType: TextInputType.emailAddress,
-                                  controller: _confirmPasswordController,
-                                  validator: (value) {
-                                    if(value.isEmpty) {
-                                      return "The password field cannot be empty";
-                                    }else if(value.length < 6) {
-                                      return "The password has to be atleast 6 characters long";
-                                    }else if(_passwordTextController.text!=value) {
-                                      return "the passwords do not match";
-                                    }
-                                    return null;
-                                  }
-                              ),
-                                trailing: IconButton(onPressed: () {
-                                  if(hideConfirmPass == true) {
-                                    setState(() {
-                                      hideConfirmPass = false;
-                                    });
-                                  }else if(hideConfirmPass == false){
-                                    setState(() {
-                                      hideConfirmPass = true;
-                                    });
-
-                                  }
+                                  return null;
                                 },
-                                    icon: Icon(Icons.remove_red_eye))
+                              ),
+                              trailing: IconButton(
+                                  icon: Icon(Icons.remove_red_eye),
+                                  onPressed: () {
+                                    setState(() {
+                                      hidePass = false;
+                                    });
+                                  }),
                             ),
                           ),
                         ),
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(14.0,8.0,14.0,8.0),
+                        padding:
+                        const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                             borderRadius: BorderRadius.circular(20.0),
-                            color: Colors.red.shade700,
+                            color: deepOrange,
                             elevation: 0.0,
                             child: MaterialButton(
-                              onPressed: () async {
-                                validateForm();
+                              onPressed: () async{
+                                if(_formKey.currentState.validate()) {
+                                  if(!await user.signUp(_name.text,_email.text, _password.text))
+                                    _key.currentState.showSnackBar(
+                                        SnackBar(content: Text("SignUp failed"))
+                                    );
+                                }
                               },
                               minWidth: MediaQuery.of(context).size.width,
-                              child: Text('Sign up',
+                              child: Text(
+                                "Sign up",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20.0
-                                ),
+                                    fontSize: 20.0),
                               ),
-                            )
-                        ),
+                            )),
                       ),
-
-
                       Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text("I already have an account",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.deepOrange,
-                                fontSize: 16
-                            ),),
-                          )
-                      ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "I already have an account",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: deepOrange, fontSize: 16),
+                              ))),
 
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
+
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Divider(),
+                              child: Text("Or sign up with", style: TextStyle(fontSize: 18,color: Colors.grey),),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Or Sign up with", style: TextStyle(fontSize: 20,color: Colors.grey),),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Divider(
-                                color: Colors.black,
-                              ),
+                              padding:
+                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                              child: Material(
+                                  child: MaterialButton(
+                                      onPressed: () async{
+
+                                      },
+                                      child: Image.asset("images/ggg.png", width: 30,)
+                                  )),
                             ),
                           ],
                         ),
                       ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                            child: Material(
-                                child: MaterialButton(
-                                    onPressed: () {},
-                                    child: Image.asset("images/fb.png", width: 60,)
-                                )),
-                          ),
-
-                          Padding(
-                            padding:
-                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                            child: Material(
-                                child: MaterialButton(
-                                    onPressed: () {},
-                                    child: Image.asset("images/ggg.png", width: 60,)
-                                )),
-                          ),
-                        ],
-                      ),
                     ],
-                  )
-              ),
+                  )),
             ),
           ),
-          Visibility(
-              visible: loading ?? true,
-              child: Center(
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Colors.white.withOpacity(0.9),
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                  ),
-                ),
-              ))
-        ],
 
+        ],
       ),
     );
-
   }
 
-  valueChanged(e) {
-    setState(() {
-      if(e == "male") {
-        groupValue = e;
-        gender = e;
-      }else if(e == "female") {
-        groupValue = e;
-        gender = e;
-      }
-    });
-  }
-
-  Future validateForm() async {
-    FormState formState = _formKey.currentState;
-    if(formState.validate()) {
-      formState.reset();
-     final User user = firebaseAuth.currentUser;
-     if(user == null) {
-       firebaseAuth.createUserWithEmailAndPassword(
-           email: _emailTextController.text,
-           password: _passwordTextController.text)
-       .then((user) => {
-          _userServices.createUser(
-              {
-                "username": _nameTextController.text,
-                "email": _emailTextController.text,
-                "userId": user.user.uid,
-                "gender": gender,
-              }
-          )
-       }).catchError((err) => {print(err.toString())});
-
-       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-     }
-    }
-  }
 }
