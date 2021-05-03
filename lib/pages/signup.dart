@@ -1,14 +1,10 @@
-import 'dart:async';
-
-import 'package:provider/provider.dart';
-import 'package:shopsolutions/commons/common.dart';
-import 'package:shopsolutions/commons/loading.dart';
-import 'package:shopsolutions/db/auth.dart';
-import 'package:shopsolutions/pages/home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:shopsolutions/helpers/common.dart';
+import 'package:shopsolutions/helpers/style.dart';
 import 'package:shopsolutions/provider/user_provider.dart';
-import '../db/users.dart';
+import 'package:shopsolutions/widgets/loading.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'home.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -16,7 +12,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
 
@@ -31,15 +26,13 @@ class _SignUpState extends State<SignUp> {
 
     return Scaffold(
       key: _key,
-      resizeToAvoidBottomInset: false,
-      body: user.status == Status.Authenticating ? Loading()
-      : Stack(
+      body: user.status == Status.Authenticating ? Loading() : Stack(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left:20, right:20.0, top: 120, bottom: 120),
+            padding: const EdgeInsets.all(0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: white,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -51,17 +44,16 @@ class _SignUpState extends State<SignUp> {
               ),
               child: Form(
                   key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: ListView(
                     children: <Widget>[
+                      SizedBox(height: 40,),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Container(
                             alignment: Alignment.topCenter,
                             child: Image.asset(
-                              'images/cart.png',
-                              width: 120.0,
-//                height: 240.0,
+                              'images/logo.png',
+                              width: 260.0,
                             )),
                       ),
                       Padding(
@@ -69,7 +61,7 @@ class _SignUpState extends State<SignUp> {
                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.3),
                           elevation: 0.0,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12.0),
@@ -107,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                                     hintText: "Email",
                                     icon: Icon(Icons.alternate_email),
                                     border: InputBorder.none),
-                                validator: (value) => !value.contains('@') ? "Field must contain a valid email" : null,
+                                validator: (value) => !value.contains('@') ? 'Enter a valid emial' : null,
                               ),
                             ),
                           ),
@@ -119,7 +111,7 @@ class _SignUpState extends State<SignUp> {
                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.3),
                           elevation: 0.0,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12.0),
@@ -144,7 +136,7 @@ class _SignUpState extends State<SignUp> {
                                   icon: Icon(Icons.remove_red_eye),
                                   onPressed: () {
                                     setState(() {
-                                      hidePass = false;
+                                      hidePass = !hidePass;
                                     });
                                   }),
                             ),
@@ -157,15 +149,16 @@ class _SignUpState extends State<SignUp> {
                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                         child: Material(
                             borderRadius: BorderRadius.circular(20.0),
-                            color: deepOrange,
+                            color: Colors.black,
                             elevation: 0.0,
                             child: MaterialButton(
                               onPressed: () async{
-                                if(_formKey.currentState.validate()) {
-                                  if(!await user.signUp(_name.text,_email.text, _password.text))
-                                    _key.currentState.showSnackBar(
-                                        SnackBar(content: Text("SignUp failed"))
-                                    );
+                                if(_formKey.currentState.validate()){
+                                  if(!await user.signUp(_name.text ,_email.text, _password.text)){
+                                    _key.currentState.showSnackBar(SnackBar(content: Text("Sign up failed")));
+                                    return;
+                                  }
+                                  changeScreenReplacement(context, HomePage());
                                 }
                               },
                               minWidth: MediaQuery.of(context).size.width,
@@ -188,38 +181,14 @@ class _SignUpState extends State<SignUp> {
                               child: Text(
                                 "I already have an account",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: deepOrange, fontSize: 16),
+                                style: TextStyle(color: Colors.black, fontSize: 16),
                               ))),
 
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
 
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Or sign up with", style: TextStyle(fontSize: 18,color: Colors.grey),),
-                            ),
-                            Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                              child: Material(
-                                  child: MaterialButton(
-                                      onPressed: () async{
-
-                                      },
-                                      child: Image.asset("images/ggg.png", width: 30,)
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   )),
             ),
           ),
-
         ],
       ),
     );

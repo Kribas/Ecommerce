@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shopsolutions/commons/common.dart';
-
+import 'package:shopsolutions/helpers/common.dart';
+import 'package:shopsolutions/helpers/style.dart';
 class Products extends StatefulWidget {
   @override
   _ProductsState createState() => _ProductsState();
@@ -100,7 +100,7 @@ class Single_prod extends StatelessWidget {
                           Text(
                             "\$$prod_price",
                             style: TextStyle(
-                                color: deepOrange,fontSize: 20, fontWeight: FontWeight.w800),
+                                color: primary,fontSize: 20, fontWeight: FontWeight.w800),
                           ),
                         ],
                       )
