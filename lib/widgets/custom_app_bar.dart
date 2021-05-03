@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return             Stack(
+    return Stack(
       children: <Widget>[
         Positioned(
           top: 10,

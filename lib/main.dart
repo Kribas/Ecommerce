@@ -31,8 +31,8 @@ class ScreensController extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);
     switch(user.status){
-//      case Status.Uninitialized:
-//        return Splash();
+      case Status.Uninitialized:
+        return Splash();
       case Status.Unauthenticated:
       case Status.Authenticating:
         return Login();

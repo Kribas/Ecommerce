@@ -1,5 +1,6 @@
 import 'package:shopsolutions/helpers/common.dart';
 import 'package:shopsolutions/helpers/style.dart';
+import 'package:shopsolutions/pages/login.dart';
 import 'package:shopsolutions/provider/product_provider.dart';
 import 'package:shopsolutions/provider/user_provider.dart';
 import 'package:shopsolutions/pages/product_search.dart';
@@ -94,17 +95,6 @@ class _HomePageState extends State<HomePage> {
                             changeScreen(context, CartScreen());
                           },
                           child: Icon(Icons.shopping_cart))),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 100,
-                  child: Align(
-                      alignment: Alignment.topRight, child: GestureDetector(
-                      onTap: (){
-                        _key.currentState.showSnackBar(SnackBar(
-                            content: Text("User profile")));
-                      },
-                      child: Icon(Icons.person))),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
